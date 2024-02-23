@@ -39,10 +39,18 @@ class TestConnection extends Action
             'world_wide_express_account_number' => $credentials['accountNumber'],
             'speed_freight_username' => $credentials['username'],
             'speed_freight_password' => $credentials['password'],
-            'authentication_key' => $credentials['authenticationKey'],
             'plugin_licence_key' => $credentials['pluginLicenceKey'],
             'plugin_domain_name' => $this->getStoreUrl(),
         ];
+
+        if(isset($credentials['apiEndpoint']) && $credentials['apiEndpoint'] == 'new'){
+            $postData['ApiVersion'] = '2.0';
+            $postData['clientId'] = $credentials['clientId'];
+            $postData['clientSecret'] = $credentials['clientSecret'];
+        }else{
+            $postData['authentication_key'] = $credentials['authenticationKey'];
+        }
+
         $response = $this->dataHelper->sendCurlRequest(EnConstants::TEST_CONN_URL, $postData);
         $result = $this->testConnectionResponse($response);
         $this->getResponse()->setHeader('Content-type', 'application/json');
@@ -57,9 +65,14 @@ class TestConnection extends Action
     {
         $response = [];
         $successMsg = 'The test resulted in a successful connection.';
-        $errorMsg = 'The credentials entered did not result in a successful test. Confirm your credentials and try again.';
-        if (isset($data)) {
-            if (isset($data->error)) {
+        if (isset($data) && !empty($data)) {
+            if(isset($data->severity)){
+                if($data->severity == 'SUCCESS'){
+                    $response['msg'] = $successMsg;
+                }else{
+                    $response = $this->dataHelper->generateResponse($data->Message, true);
+                }
+            }elseif (isset($data->error)) {
                 $response = $this->dataHelper->generateResponse($data->error_desc, true);
                 if (isset($data->error->Code)) {
                     $response = $this->dataHelper->generateResponse($data->error->Description, true);
@@ -68,6 +81,8 @@ class TestConnection extends Action
                 $response['msg'] = $successMsg;
             } elseif ($data->status == 'Error') {
                 $response = $this->dataHelper->generateResponse($data->error_desc, true);
+            }else{
+                $response = $this->dataHelper->generateResponse('An empty or unknown response format, therefore we are unable to determine whether it was successful or an error', true);
             }
         } else {
             $response = $this->dataHelper->generateResponse();

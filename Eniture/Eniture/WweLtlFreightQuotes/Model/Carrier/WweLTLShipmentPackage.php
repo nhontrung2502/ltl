@@ -229,6 +229,7 @@ class WweLTLShipmentPackage
     {
         $receiverZipCode = preg_replace('/\s+/', '', $receiverZipCode);
         $originZipCodes = preg_replace('/\s+/', '', $originZipCodes);
-        return in_array($receiverZipCode, explode(',', $originZipCodes)) ? 1 : 0;
+        $originZipCodesArr = empty($originZipCodes) ? [] : explode(',', $originZipCodes);
+        return in_array($receiverZipCode, $originZipCodesArr) ? 1 : 0;
     }
 }

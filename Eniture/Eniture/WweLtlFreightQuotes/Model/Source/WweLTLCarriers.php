@@ -73,6 +73,8 @@ class WweLTLCarriers
 
                 ['value' => 'GLDF',  'label'  => __('Gold Coast Freightways')],
 
+                ['value' => 'MTVL',  'label'  => __('GLS-US formerly Mountain Valley Express')],
+
                 ['value' => 'HMES',  'label'  => __('Holland')],
 
                 ['value' => 'LAXV',  'label'  => __('Land Air Express Of New England')],

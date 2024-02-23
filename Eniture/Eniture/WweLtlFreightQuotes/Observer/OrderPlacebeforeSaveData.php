@@ -19,6 +19,7 @@ class OrderPlacebeforeSaveData implements ObserverInterface
      * @var SessionManagerInterface
      */
     private $coreSession;
+    public $offerLiftgateAsAnOption;
 
     /**
      * OrderPlacebeforeSaveData constructor.
@@ -77,13 +78,13 @@ class OrderPlacebeforeSaveData implements ObserverInterface
     public function getData($order, $method, $orderDetailData, $multiShip)
     {
         $liftGate = $resi = false;
-        $shippingMethod = explode('_', $method);
+        $shippingMethod = empty($method) ? [] : explode('_', $method);
         /*These Lines are added for compatibility only*/
         $lgArray = ['always' => 1, 'asOption' => '', 'residentialLiftgate' => ''];
         $orderDetailData['residentialDelivery'] = 0;
         /*These Lines are added for compatibility only*/
 
-        $arr = (explode('+', $method));
+        $arr = empty($method) ? [] : (explode('+', $method));
         if (in_array('LG', $arr)) {
             $orderDetailData['liftGateDelivery'] = $lgArray;
             $liftGate = true;

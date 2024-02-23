@@ -35,32 +35,82 @@
             <group id="first" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
                    showInStore="1">
                 <label>Connection Settings</label>
+                <field id="wweltlApiEndpoint" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Which API will you connect to?</label>
+                    <validate>required-entry</validate>
+                    <source_model>Eniture\WweLtlFreightQuotes\Model\Source\WweLtlApiEndpoint</source_model>
+                </field>
+                <!-- New API -->
+                <field id="wweltlClientId" translate="label" type="text" sortOrder="4" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Client ID</label>
+                    <validate>required-entry no-whitespace validate-length minimum-length-1 maximum-length-100</validate>
+                    <depends>
+                        <field id="wweltlApiEndpoint">new</field>
+                    </depends>
+                </field>
+                <field id="wweltlClientSecret" translate="label" type="text" sortOrder="5" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Client Secret</label>
+                    <validate>required-entry no-whitespace validate-length minimum-length-1 maximum-length-100</validate>
+                    <depends>
+                        <field id="wweltlApiEndpoint">new</field>
+                    </depends>
+                </field>
+                <field id="wweLtUsernameNewAPI" translate="label" type="text" sortOrder="6" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Username</label>
+                    <depends>
+                        <field id="wweltlApiEndpoint">new</field>
+                    </depends>
+                </field>
+                <field id="wweLtPasswordNewAPI" translate="label" type="text" sortOrder="7" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Password</label>
+                    <depends>
+                        <field id="wweltlApiEndpoint">new</field>
+                    </depends>
+                </field>
+
+                <!-- Legacy API -->
                 <field id="WweLtAccountNumber" translate="label" type="text" sortOrder="3" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Account Number</label>
                     <validate>required-entry</validate>
+                    <depends>
+                        <field id="wweltlApiEndpoint">legacy</field>
+                    </depends>
                 </field>
                 <field id="WweLtUsername" translate="label" type="text" sortOrder="4" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Username</label>
                     <validate>required-entry</validate>
+                    <depends>
+                        <field id="wweltlApiEndpoint">legacy</field>
+                    </depends>
                 </field>
                 <field id="WweLtPassword" translate="label" type="text" sortOrder="5" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Password</label>
                     <validate>required-entry</validate>
+                    <depends>
+                        <field id="wweltlApiEndpoint">legacy</field>
+                    </depends>
                 </field>
                 <field id="WweLtAuthenticationKey" translate="label" type="text" sortOrder="6" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Authentication Key</label>
                     <validate>required-entry</validate>
+                    <depends>
+                        <field id="wweltlApiEndpoint">legacy</field>
+                    </depends>
                 </field>
-                <field id="WweLtLicenseKey" translate="label" type="text" sortOrder="7" showInDefault="1"
+                <field id="WweLtLicenseKey" translate="label" type="text" sortOrder="8" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Plugin License Key</label>
                     <validate>required-entry</validate>
                 </field>
-                <field id="WweLtTestConnection" translate="label" sortOrder="8" showInDefault="1" showInWebsite="1"
+                <field id="WweLtTestConnection" translate="label" sortOrder="9" showInDefault="1" showInWebsite="1"
                        showInStore="1">
                     <frontend_model>Eniture\WweLtlFreightQuotes\Block\System\Config\TestConnection</frontend_model>
                 </field>
@@ -201,11 +251,6 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>
                         <![CDATA[When selected, the LTL Freight Quote module will return quotes when an order's total weight exceeds 150 lbs (the maximum permitted by FedEx and UPS), even if none of the products have settings to indicate that it will ship LTL. To increase the accuracy of the returned quote(s), all products should have accurate weights and dimensions.]]></comment>
-                </field>
-                <field id="palletWeight" translate="label" type="text" sortOrder="27" showInDefault="1" showInWebsite="1"
-                       showInStore="1">
-                    <label>Plus weight of a pallet</label>
-                    
                 </field>
             </group>
         </section>
