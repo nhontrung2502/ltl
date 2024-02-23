@@ -1,0 +1,228 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category   Shipping
+ * @package    Eniture_WweLtlFreightQuotes
+ * @author     john@eniture-dev.com
+ * @website    http://ess.eniture.com
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="WweLtlFreightQuotes" translate="label" sortOrder="10">
+            <label>Eniture - Worldwide Express LTL Freight Quotes</label>
+        </tab>
+        <section id="carriers" translate="label" type="text" sortOrder="320" showInDefault="1" showInWebsite="1"
+                 showInStore="1">
+            <group id="ENWweLtlFreightQuotes" translate="label" type="text" sortOrder="0" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
+                <label>Eniture - Worldwide Express LTL Freight Quotes</label>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <label>Enabled For Checkout</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+        </section>
+        <section id="WweLtConnSettings" translate="label" type="text" sortOrder="10" showInDefault="1"
+                 showInWebsite="1" showInStore="1">
+            <label>Connection Settings</label>
+            <tab>WweLtlFreightQuotes</tab>
+            <resource>Eniture_WweLtlFreightQuotes::config</resource>
+            <group id="first" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>Connection Settings</label>
+                <field id="WweLtAccountNumber" translate="label" type="text" sortOrder="3" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Account Number</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="WweLtUsername" translate="label" type="text" sortOrder="4" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Username</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="WweLtPassword" translate="label" type="text" sortOrder="5" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Password</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="WweLtAuthenticationKey" translate="label" type="text" sortOrder="6" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Authentication Key</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="WweLtLicenseKey" translate="label" type="text" sortOrder="7" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Plugin License Key</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="WweLtTestConnection" translate="label" sortOrder="8" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <frontend_model>Eniture\WweLtlFreightQuotes\Block\System\Config\TestConnection</frontend_model>
+                </field>
+            </group>
+        </section>
+
+        <section id="WweLtWarehouse" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1"
+                 showInStore="1">
+            <label>Warehouses</label>
+            <tab>WweLtlFreightQuotes</tab>
+            <resource>Eniture_WweLtlFreightQuotes::config</resource>
+            <group id="second" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>Warehouses</label>
+                <field id="EnitureWarehouse" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <frontend_model>Eniture\WweLtlFreightQuotes\Block\System\Config\WarehouseTable</frontend_model>
+                </field>
+                <field id="EnitureDropship" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <frontend_model>Eniture\WweLtlFreightQuotes\Block\System\Config\DropshipTable</frontend_model>
+                </field>
+            </group>
+        </section>
+
+        <section id="WweLtQuoteSetting" translate="label" type="text" sortOrder="30" showInDefault="1"
+                 showInWebsite="1" showInStore="1">
+            <label>Quote Settings</label>
+            <tab>WweLtlFreightQuotes</tab>
+            <resource>Eniture_WweLtlFreightQuotes::config</resource>
+            <group id="third" translate="label" type="select" sortOrder="15" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>Quote Settings</label>
+
+                <field id="carrierList" translate="label" type="multiselect" sortOrder="11" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Quote Service Options</label>
+                    <source_model>Eniture\WweLtlFreightQuotes\Model\Source\WweLTLCarriers</source_model>
+                    <validate>required-entry</validate>
+                </field>
+
+                <field id="ratingMethod" translate="label" type="select" sortOrder="12" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Rating Method</label>
+                    <source_model>Eniture\WweLtlFreightQuotes\Model\Source\WweLTLRatingMethod</source_model>
+                    <comment><![CDATA[Displays list of specified number of least expensive options.]]></comment>
+                </field>
+                <field id="options" translate="label" type="select" sortOrder="13" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <label>Number Of Options</label>
+                    <source_model>Eniture\WweLtlFreightQuotes\Model\Source\WweLTLCheapestOptions</source_model>
+                    <comment><![CDATA[Number of options to display in the shopping cart.]]></comment>
+                    <depends>
+                        <field id="ratingMethod" separator="|">2|3</field>
+                    </depends>
+                </field>
+                <field id="labelAs" translate="label" type="text" sortOrder="14" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <label>Label As</label>
+                    <comment>
+                        <![CDATA[What the user sees during checkout e.g. "Freight". Leave blank to display carrier name.]]></comment>
+                    <depends>
+                        <field id="ratingMethod" separator="|">1|3</field>
+                    </depends>
+                </field>
+                <field id="dlrvyEstimates" translate="label" type="select" sortOrder="15" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Show Delivery Estimate</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Show Delivery Estimates With Shipping Services.]]></comment>
+                    <depends>
+                        <field id="ratingMethod" separator="|">1|2</field>
+                    </depends>
+                </field>
+                <field id="residentialDlvry" translate="label" type="select" sortOrder="16" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Residential Delivery</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Residential Delivery.]]></comment>
+                </field>
+                <field id="residentialAddressDetect" translate="label" type="select" sortOrder="17" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Auto detect residential addresses</label>
+                    <frontend_model>Eniture\WweLtlFreightQuotes\Block\System\Config\ResidentialAddressDetection</frontend_model>
+                </field>
+                <field id="liftGate" translate="label" type="select" sortOrder="18" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <label>Lift Gate Delivery</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Lift Gate Delivery.]]></comment>
+                </field>
+                <field id="OfferLiftgateAsAnOption" translate="label" type="select" sortOrder="19" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Offer lift gate delivery as an option</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="RADforLiftgate" translate="label" type="select" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Always include lift gate delivery when a residential address is detected</label>
+                    <frontend_model>Eniture\WweLtlFreightQuotes\Block\System\Config\RADforLiftgate</frontend_model>
+                </field>
+
+                <field id="insuranceCategory" translate="label" type="select" sortOrder="21" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Insurance Category</label>
+                    <source_model>Eniture\WweLtlFreightQuotes\Model\Source\WweLTLInsuranceCategory</source_model>
+                </field>
+
+                <field id="hndlngFee" translate="label" type="text" sortOrder="22" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <label>Handling Fee / Markup</label>
+                    <validate>validate-number validate-length maximum-length-7 validate-WweLt-decimal-limit-2</validate>
+                </field>
+                <field id="symbolicHndlngFee" translate="label" type="select" sortOrder="23" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Handling Fee Symbol</label>
+                    <source_model>Eniture\WweLtlFreightQuotes\Model\Source\HandlingFee</source_model>
+                    <comment>
+                        <![CDATA[Amount excluding tax. Enter an amount, e.g 3.75, or a percentage, e.g, 5%. Leave blank to disable.]]></comment>
+                </field>
+                <field id="ownArangement" translate="label" type="select" sortOrder="24" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Allow For Own Arrangement</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        <![CDATA[Adds an option in the shipping cart for users to indicate that they will make and pay for their own LTL shipping arrangements.]]></comment>
+                </field>
+                <field id="ownArangementText" translate="label" type="text" sortOrder="25" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Text For Own Arrangement</label>
+                    <depends>
+                        <field id="ownArangement">1</field>
+                    </depends>
+                </field>
+                <field id="weightExeeds" translate="label" type="select" sortOrder="26" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Return LTL quotes when an order's parcel shipment weight exceeds 150 lbs</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>
+                        <![CDATA[When selected, the LTL Freight Quote module will return quotes when an order's total weight exceeds 150 lbs (the maximum permitted by FedEx and UPS), even if none of the products have settings to indicate that it will ship LTL. To increase the accuracy of the returned quote(s), all products should have accurate weights and dimensions.]]></comment>
+                </field>
+                <field id="palletWeight" translate="label" type="text" sortOrder="27" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <label>Plus weight of a pallet</label>
+                    
+                </field>
+            </group>
+        </section>
+
+        <section id="WweLtUserGuide" translate="label" type="text" sortOrder="31" showInDefault="1" showInWebsite="1"
+                 showInStore="1">
+            <label>User Guide</label>
+            <tab>WweLtlFreightQuotes</tab>
+            <resource>Eniture_WweLtlFreightQuotes::config</resource>
+            <group id="fourth" translate="label" type="text" sortOrder="26" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>User Guide</label>
+                <field id="WweLtUserGuide" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
+                    <frontend_model>Eniture\WweLtlFreightQuotes\Block\System\Config\UserGuide</frontend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
