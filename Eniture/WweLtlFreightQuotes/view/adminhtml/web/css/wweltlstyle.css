@@ -155,7 +155,7 @@ button.en-btn:focus {
     text-align: center;
 }
 
-label[for="WweLtConnSettings_first_WweLtAccountNumber"]:not(.mage-error):after, label[for="WweLtConnSettings_first_WweLtUsername"]:not(.mage-error):after, label[for="WweLtConnSettings_first_WweLtPassword"]:not(.mage-error):after, label[for="WweLtConnSettings_first_WweLtAuthenticationKey"]:not(.mage-error):after, label[for="WweLtConnSettings_first_WweLtLicenseKey"]:not(.mage-error):after, label[for="WweLtConnSettings_first_WweLtAccessLevel"]:not(.mage-error):after, label[for="WweLtConnSettings_first_wweltlClientId"]:not(.mage-error):after, label[for="WweLtConnSettings_first_wweltlClientSecret"]:not(.mage-error):after {
+label[for="WweLtConnSettings_first_WweLtAccountNumber"]:after, label[for="WweLtConnSettings_first_WweLtUsername"]:after, label[for="WweLtConnSettings_first_WweLtPassword"]:after, label[for="WweLtConnSettings_first_WweLtAuthenticationKey"]:after, label[for="WweLtConnSettings_first_WweLtLicenseKey"]:after, label[for="WweLtConnSettings_first_WweLtAccessLevel"]:after {
     content: '*';
     color: red;
     padding: 5px;

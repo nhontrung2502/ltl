@@ -78,11 +78,7 @@ class PlanUpgrade
         
         $this->curl->post($this->curlUrl, $postData);
         $output = $this->curl->getBody();
-        if(!empty($output) && is_string($output)){
-            $result = json_decode($output, true);
-        }else{
-            $result = [];
-        }
+        $result = json_decode($output, true);
 
         $plan = isset($result['pakg_group']) ? $result['pakg_group'] : '';
         $expireDay = isset($result['pakg_duration']) ? $result['pakg_duration'] : '';

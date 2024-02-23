@@ -2,7 +2,7 @@
   "name": "eniture/wweltlfreightquotes",
   "description": "Magento 2 Shipping Rates From Worldwide Express LTL",
   "type": "magento2-module",
-  "version": "3.1.0",
+  "version": "2.0.9",
   "license": [
     "OSL-3.0",
     "AFL-3.0"

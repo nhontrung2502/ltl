@@ -29,12 +29,6 @@ class WweLTLFilterQuotes
     public $wweLabel;
 
     /**
-     * @var int type
-     */
-    public $totalCarriers;
-    
-
-    /**
      * set values in class attributes and return quotes
      * @param array $quotes
      * @param $carrierNumbers

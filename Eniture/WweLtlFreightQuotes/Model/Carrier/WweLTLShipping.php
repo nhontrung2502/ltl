@@ -194,10 +194,15 @@ class WweLTLShipping extends AbstractCarrier implements
             return false;
         }
 
-        $getQuotesFromSession = $this->quotesFromSession();
-        if (null !== $getQuotesFromSession) {
-            return $getQuotesFromSession;
-        }
+        /// Commented out due to GT-199 issue.
+        /// The quotes from session don't include the selected carier if customers switch to another address on checkout page
+        /// causing issue "Carrier with such method not found"
+
+        // $getQuotesFromSession = $this->quotesFromSession();
+        // if (null !== $getQuotesFromSession) {
+        //     return $getQuotesFromSession;
+        // }
+
         $ItemsList = $request->getAllItems();
         $receiverZipCode = $request->getDestPostcode();
         $planInfo = $this->dataHelper->planInfo();
@@ -232,10 +237,9 @@ class WweLTLShipping extends AbstractCarrier implements
         if (empty($requestArr)) {
             return false;
         }
-        
         $url = EnConstants::QUOTES_URL;
         $quotes = $this->dataHelper->sendCurlRequest($url, $requestArr);
-        
+
         $quotesResult = $this->manageAllQuotes->getQuotesResultArr($quotes);
         $this->session->setEnShippingQuotes($quotesResult);
 
@@ -269,7 +273,7 @@ class WweLTLShipping extends AbstractCarrier implements
     public function getShipmentPackageRequest($items, $receiverZipCode, $request, $planInfo)
     {
         $package = [];
-        foreach ($items as $item) {
+        foreach ($items as $key => $item) {
             $_product = $this->productLoader->create()->load($item->getProductId());
             $productType = $item->getRealProductType() ?? $_product->getTypeId();
 
@@ -287,9 +291,15 @@ class WweLTLShipping extends AbstractCarrier implements
                 $orderWidget[$originAddress['senderZip']]['origin'] = $originAddress;
 
                 $weight = $_product->getWeight();
-                $length = $this->getDims($_product, 'length');
-                $width = $this->getDims($_product, 'width');
-                $height = $this->getDims($_product, 'height');
+                if($key==0)
+                {
+                    $palletWeight = $this->scopeConfig->getValue('WweLtQuoteSetting/third/palletWeight', ScopeInterface::SCOPE_STORE);
+                    if($palletWeight>0)
+                        $weight += $palletWeight/$productQty;
+                }
+                $length = $this->getDims($_product, 'length') ? $this->getDims($_product, 'length') : 0.0;
+                $width = $this->getDims($_product, 'width') ? $this->getDims($_product, 'width') : 0.0;
+                $height = $this->getDims($_product, 'height') ? $this->getDims($_product, 'height') : 0.0;
 
                 $setHzAndIns = $this->setHzAndIns($_product, $planInfo);
                 $lineItemClass = $this->getLineItemClass($_product);
@@ -300,10 +310,10 @@ class WweLTLShipping extends AbstractCarrier implements
                     'lineItemName' => $_product->getName(),
                     'piecesOfLineItem' => $productQty,
                     'lineItemPrice' => $_product->getPrice(),
-                    'lineItemWeight' => number_format((float)$weight, 2, '.', ''),
-                    'lineItemLength' => number_format((float)$length, 2, '.', ''),
-                    'lineItemWidth' => number_format((float)$width, 2, '.', ''),
-                    'lineItemHeight' => number_format((float)$height, 2, '.', ''),
+                    'lineItemWeight' => number_format($weight, 2, '.', ''),
+                    'lineItemLength' => number_format($length, 2, '.', ''),
+                    'lineItemWidth' => number_format($width, 2, '.', ''),
+                    'lineItemHeight' => number_format($height, 2, '.', ''),
                     'isHazmatLineItem' => $setHzAndIns['hazmat'],
                     'product_insurance_active' => ($setHzAndIns['insurance'])?'1':'0',
                     'shipBinAlone' => $_product->getData('en_own_package'),
@@ -356,6 +366,7 @@ class WweLTLShipping extends AbstractCarrier implements
         }
 
         $isEnableLtl = $_product->getData('en_ltl_check');
+        if(is_null($isEnableLtl)) $isEnableLtl = 1;
         if (($isEnableLtl) || ($_product->getWeight() > 150 && $weightConfigExceedOpt)) {
             $freightClass = 'ltl';
         } else {
@@ -372,6 +383,7 @@ class WweLTLShipping extends AbstractCarrier implements
     private function getLineItemClass($_product)
     {
         $lineItemClass = $_product->getData('en_freight_class');
+        $lineItemClass = (isset($lineItemClass)&$lineItemClass>0)?$lineItemClass:70; //add default value
         switch ($lineItemClass) {
             case 77:
                 $lineItemClass = 77.5;
@@ -400,8 +412,7 @@ class WweLTLShipping extends AbstractCarrier implements
             return $dimValue;
         }
 
-        $dimension = $_product->getData('en_'.$dimOf);
-        return !empty($dimension) ? $dimension : 0;
+        return $_product->getData('en_'.$dimOf);
     }
 
     /**

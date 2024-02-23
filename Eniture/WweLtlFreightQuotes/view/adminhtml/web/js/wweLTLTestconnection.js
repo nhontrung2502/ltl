@@ -28,25 +28,13 @@ function addWweLtTestConnTitle($) {
  * @returns {Success or Error}
  */
 function WweLtTestConnectionAjaxCall($, ajaxURL) {
-    let wweltlApiEndpoint = $('#WweLtConnSettings_first_wweltlApiEndpoint').val();
-
-    let credentials = {
+    var credentials = {
         accountNumber: $('#WweLtConnSettings_first_WweLtAccountNumber').val(),
-        pluginLicenceKey: $('#WweLtConnSettings_first_WweLtLicenseKey').val(),
-        apiEndpoint         : wweltlApiEndpoint
+        username: $('#WweLtConnSettings_first_WweLtUsername').val(),
+        password: $('#WweLtConnSettings_first_WweLtPassword').val(),
+        authenticationKey: $('#WweLtConnSettings_first_WweLtAuthenticationKey').val(),
+        pluginLicenceKey: $('#WweLtConnSettings_first_WweLtLicenseKey').val()
     };
-
-    if(wweltlApiEndpoint == 'new'){
-        credentials.clientId            = $('#WweLtConnSettings_first_wweltlClientId').val();
-        credentials.clientSecret        = $('#WweLtConnSettings_first_wweltlClientSecret').val();
-        credentials.username            = $('#WweLtConnSettings_first_wweLtUsernameNewAPI').val();
-        credentials.password            = $('#WweLtConnSettings_first_wweLtPasswordNewAPI').val();
-    }else{
-        credentials.username            = $('#WweLtConnSettings_first_WweLtUsername').val();
-        credentials.password            = $('#WweLtConnSettings_first_WweLtPassword').val();
-        credentials.authenticationKey   = $('#WweLtConnSettings_first_WweLtAuthenticationKey').val();
-    }
-
     WweLtAjaxRequest(credentials, ajaxURL, WweLtConnectSuccessFunction);
 }
 
