@@ -48,7 +48,7 @@ class WweLTLAdminConfiguration
     public function setCarriersAndHelpersCodesGlobally()
     {
         $this->setCodesGlobally('enitureCarrierCodes', 'ENWweLTL');
-        $this->setCodesGlobally('enitureCarrierTitle', 'LTL Freight');
+        $this->setCodesGlobally('enitureCarrierTitle', 'Worldwide Express LTL Freight Quotes');
         $this->setCodesGlobally('enitureHelpersCodes', '\Eniture\WweLtlFreightQuotes');
         $this->setCodesGlobally('enitureActiveModules', $this->checkModuleIsEnabled());
         $this->setCodesGlobally('enitureModuleTypes', 'ltl');

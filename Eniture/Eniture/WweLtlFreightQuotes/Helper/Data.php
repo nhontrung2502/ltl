@@ -16,6 +16,7 @@ use Magento\Shipping\Model\Config;
 use Magento\Store\Model\ScopeInterface;
 use \Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\App\Cache\Manager;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 
 /**
  * Class Data
@@ -96,6 +97,21 @@ class Data extends AbstractHelper implements DataHelperInterface
     public $configSettings;
 
     public $objectManager;
+    public $wweLTLFilterQuotes;
+    public $configWriter;
+    public $residentialDlvry;
+    public $liftGate;
+    public $OfferLiftgateAsAnOption;
+    public $RADforLiftgate;
+    public $hndlngFee;
+    public $symbolicHndlngFee;
+    public $ratingMethod;
+    public $labelAs;
+    public $ownArangement;
+    public $ownArangementText;
+    public $options;
+    public $dlrvyEstimates;
+
 
     /**
      * @param Context $context
@@ -121,7 +137,8 @@ class Data extends AbstractHelper implements DataHelperInterface
         Registry $registry,
         SessionManagerInterface $coreSession,
         Manager $cacheManager,
-        ObjectManagerInterface $objectmanager
+        ObjectManagerInterface $objectmanager,
+        WriterInterface $configWriter
     ) {
         $this->moduleManager = $context->getModuleManager();
         $this->connection = $resource->getConnection(ResourceConnection::DEFAULT_CONNECTION);
@@ -135,6 +152,7 @@ class Data extends AbstractHelper implements DataHelperInterface
         $this->coreSession = $coreSession;
         $this->cacheManager = $cacheManager;
         $this->objectManager = $objectmanager;
+        $this->configWriter = $configWriter;
         parent::__construct($context);
     }
 
@@ -353,8 +371,18 @@ class Data extends AbstractHelper implements DataHelperInterface
     {
         $return = [];
         $whCollection = $this->fetchWarehouseWithID($data['location'], $data['locationId']);
-        $inStore = json_decode($whCollection[0]['in_store'], true);
-        $locDel = json_decode($whCollection[0]['local_delivery'], true);
+
+        if(!empty($whCollection[0]['in_store']) && is_string($whCollection[0]['in_store'])){
+            $inStore = json_decode($whCollection[0]['in_store'], true);
+        }else{
+            $inStore = [];
+        }
+
+        if(!empty($whCollection[0]['local_delivery']) && is_string($whCollection[0]['local_delivery'])){
+            $locDel = json_decode($whCollection[0]['local_delivery'], true);
+        }else{
+            $locDel = [];
+        }
 
         if ($inStore) {
             $inStoreTitle = $inStore['checkout_desc_store_pickup'];
@@ -410,7 +438,7 @@ class Data extends AbstractHelper implements DataHelperInterface
         }
 
         if (isset($planPackage) && !empty($planPackage)) {
-            if (!empty($planPackage['planNumber']) && $planPackage['planNumber'] != '-1') {
+            if (isset($planPackage['planNumber']) && $planPackage['planNumber'] != '' && $planPackage['planNumber'] != '-1') {
                 $planMsg = __('The Worldwide Express LTL Freight Quotes from Eniture Technology is currently on the '.$planPackage['planName'].' and will renew on '.$planPackage['expiryDate'].'. If this does not reflect changes made to the subscription plan'.$planRefreshLink.'.');
             }
         }
@@ -563,7 +591,12 @@ class Data extends AbstractHelper implements DataHelperInterface
         try {
             $this->curl->post($url, $fieldString);
             $output = $this->curl->getBody();
-            $result = json_decode($output, $isAssocArray);
+            if(!empty($output) && is_string($output)){
+                $result = json_decode($output, $isAssocArray);
+            }else{
+                $result = ($isAssocArray) ? [] : '';
+            }
+
         } catch (\Throwable $e) {
             $result = [];
         }
@@ -619,6 +652,10 @@ class Data extends AbstractHelper implements DataHelperInterface
         $this->configSettings = $this->getConfigData('WweLtQuoteSetting/third');
         $allConfigServices = $this->getAllConfigServicesArray($scopeConfig);
         $this->quoteSettingsData();
+
+        // Migration from Legacy to NEW API
+        $quotes = $this->migrateApiIfNeeded($quotes);
+
         if ($isMultiShipmentQuantity) {
             return $this->getOriginsMinimumQuotes($quotes, $allConfigServices);
         }
@@ -626,6 +663,7 @@ class Data extends AbstractHelper implements DataHelperInterface
         $count = 0;
         $lgQuotes = false;
         $this->isMultiShipment = (count($quotes) > 1) ? true : false;
+        
         foreach ($quotes as $origin => $quote) {
             if (isset($quote->severity)) {
                 return [];
@@ -708,7 +746,7 @@ class Data extends AbstractHelper implements DataHelperInterface
         $handlingFeeMarkup = $this->hndlngFee;
         $symbolicHandlingFee = $this->symbolicHndlngFee;
 
-        if (strlen($handlingFeeMarkup) > 0) {
+        if (!empty($handlingFeeMarkup) > 0) {
             if ($symbolicHandlingFee == '%') {
                 $percentVal = $handlingFeeMarkup / 100 * $cost;
                 $grandTotal = $percentVal + $cost;
@@ -788,7 +826,7 @@ class Data extends AbstractHelper implements DataHelperInterface
     {
         $return = 'CFMS';
         $lg ? $return = $return . '+LG' : '';
-        $arr = (explode('+', $code));
+        $arr = empty($code) ? [] : (explode('+', $code));
         if (in_array('R', $arr)) {
             $return = $return . '+R';
         }
@@ -888,7 +926,7 @@ class Data extends AbstractHelper implements DataHelperInterface
         $handlingFeeMarkup = $this->hndlngFee;
         $symbolicHandlingFee = $this->symbolicHndlngFee;
 
-        if (strlen($handlingFeeMarkup) > 0) {
+        if (!empty($handlingFeeMarkup) > 0) {
             if ($symbolicHandlingFee == '%') {
                 $percentVal = $handlingFeeMarkup / 100 * $cost;
                 $grandTotal = $percentVal + $cost;
@@ -1033,7 +1071,11 @@ class Data extends AbstractHelper implements DataHelperInterface
      */
     public function getAllConfigServicesArray($scopeConfig)
     {
-        return explode(',', $this->configSettings['carrierList']);
+        if(empty($this->configSettings['carrierList'])){
+            return [];
+        }else{
+            return empty($this->configSettings['carrierList']) ? [] : explode(',', $this->configSettings['carrierList']);
+        }
     }
 
     /**
@@ -1098,25 +1140,6 @@ class Data extends AbstractHelper implements DataHelperInterface
         $groupId = 'first';
 
         return $this->scopeConfig->getValue("$sectionId/$groupId/$fieldId", ScopeInterface::SCOPE_STORE);
-    }
-
-    /**
-     * @param $cerriersRes
-     * @return array
-     */
-    public function carrierResult($cerriersRes)
-    {
-        $status = [];
-        if (isset($cerriersRes) && !empty($cerriersRes->carriers)) {
-            $date = $this->timezoneInterface->date()->format('m/d/y H:i:s');
-            $this->configWriter->save('cerasisLtlCarriers/second/requestTime', json_encode($date), $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0);
-            $this->configWriter->save('cerasisLtlCarriers/second/carriers', json_encode($cerriersRes), $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0);
-            $status['SUCCESS'] = true;
-        } else {
-            $status['ERROR'] = true;
-        }
-
-        return $status;
     }
 
     /**
@@ -1216,7 +1239,7 @@ class Data extends AbstractHelper implements DataHelperInterface
      */
     public function generateResponse($msg = null, $type = true)
     {
-        $defaultError = 'Something went wrong. Please try again!';
+        $defaultError = 'Empty response from API.';
         return [
             'error' => ($type == true) ? 1 : 0,
             'msg' => ($msg != null) ? $msg : $defaultError
@@ -1338,7 +1361,7 @@ class Data extends AbstractHelper implements DataHelperInterface
 
             default:
                 $restriction = [
-//                    'advance' => $advance,
+                // 'advance' => $advance,
                     'standard' => $standard
                 ];
                 break;
@@ -1355,5 +1378,33 @@ class Data extends AbstractHelper implements DataHelperInterface
             $boxHelper =  $this->objectManager->get("Eniture\StandardBoxSizes\Helper\Data");
             return $boxHelper->getBoxFactory();
         }
+    }
+
+    /**
+     * Function to migrate API
+     */
+    protected function migrateApiIfNeeded($quotes)
+    {
+        foreach ($quotes as $key => $quote) {
+            if(isset($quote->newAPICredentials) && !empty($quote->newAPICredentials->client_id) && !empty($quote->newAPICredentials->client_secret)){
+                $this->configWriter->save('WweLtConnSettings/first/wweltlClientId', $quote->newAPICredentials->client_id);
+                $this->configWriter->save('WweLtConnSettings/first/wweltlClientSecret', $quote->newAPICredentials->client_secret);
+                $this->configWriter->save('WweLtConnSettings/first/wweltlApiEndpoint', 'new');
+                $username = $this->getConfigData('WweLtConnSettings/first/WweLtUsername');
+                $password = $this->getConfigData('WweLtConnSettings/first/WweLtPassword');
+                $this->configWriter->save('WweLtConnSettings/first/wweLtUsernameNewAPI', $username);
+                $this->configWriter->save('WweLtConnSettings/first/wweLtPasswordNewAPI', $password);
+                unset($quotes[$key]->newAPICredentials);
+                $this->clearCache();
+            }
+
+            if(isset($quote->oldAPICredentials)){
+                $this->configWriter->save('WweLtConnSettings/first/wweltlApiEndpoint', 'legacy');
+                unset($quotes[$key]->oldAPICredentials);
+                $this->clearCache();
+            }
+        }
+
+        return $quotes;
     }
 }

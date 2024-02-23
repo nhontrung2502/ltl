@@ -12,7 +12,7 @@
                 $residential = $liftGate = false;
                 $resi = $order['quotes']['residentialDelivery'] ?? false;
                 $title = (isset($order['quotes']['title'])) ? $order['quotes']['title'] . ' :' : '';
-                $rate = (isset($order['quotes']['rate'])) ? number_format($order['quotes']['rate'], 2, '.', '') : '0.00';
+                $rate = (isset($order['quotes']['rate'])) ? number_format((float)$order['quotes']['rate'], 2, '.', '') : '0.00';
 
                 if ($shipmentNumber > 1) { ?>
                     <hr class="order-info-hr">
