@@ -1,0 +1,103 @@
+<?php
+
+namespace Eniture\WweLtlFreightQuotes\Block\System\Config;
+
+use Eniture\WweLtlFreightQuotes\Helper\Data;
+use Magento\Backend\Block\Template\Context;
+use Magento\Config\Block\System\Config\Form\Field;
+use Magento\Framework\Data\Form\Element\AbstractElement;
+
+class WarehouseTable extends Field
+{
+    const WAREHOUSE_TEMPLATE = 'system/config/warehouse.phtml';
+
+    public $dataHelper;
+
+    /**
+     * @param Context $context
+     * @param Data $dataHelper
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        Data $dataHelper,
+        $data = []
+    ) {
+        $this->dataHelper = $dataHelper;
+        parent::__construct($context, $data);
+    }
+
+    /**
+     * @return $this
+     */
+    public function _prepareLayout()
+    {
+        parent::_prepareLayout();
+        if (!$this->getTemplate()) {
+            $this->setTemplate(static::WAREHOUSE_TEMPLATE);
+        }
+        return $this;
+    }
+
+    /**
+     * @param AbstractElement $element
+     * @return string
+     */
+    public function render(AbstractElement $element)
+    {
+        // Remove scope label
+        $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
+        return parent::render($element);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAjaxUrl()
+    {
+        return $this->getbaseUrl() . 'wweltlfreightquotes/Warehouse/';
+    }
+
+    /**
+     * @param AbstractElement $element
+     * @return string
+     */
+    protected function _getElementHtml(AbstractElement $element)
+    {
+        return $this->_toHtml();
+    }
+
+    /**
+     * this function return the current plan active
+     * @return string
+     */
+    public function getCurrentPlan()
+    {
+        return $this->dataHelper->planInfo()['planNumber'];
+    }
+
+    /**
+     * Show WWE LTL Plan Notice
+     * @return string
+     */
+    public function planNotice()
+    {
+        $planRefreshUrl = $this->getPlanRefreshUrl();
+        return $this->dataHelper->setPlanNotice($planRefreshUrl);
+    }
+
+    /**
+     * @return string
+     */
+    public function addWhRestriction()
+    {
+        return $this->dataHelper->whPlanRestriction();
+    }
+    /**
+     * @return url
+     */
+    public function getPlanRefreshUrl()
+    {
+        return $this->getbaseUrl().'/wweltlfreightquotes/Test/PlanRefresh/';
+    }
+}

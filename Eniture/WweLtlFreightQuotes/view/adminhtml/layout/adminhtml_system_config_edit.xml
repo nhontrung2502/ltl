@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <link src="Eniture_WweLtlFreightQuotes::js/wweLTLcommon.js"/>
+        <!--<link src="Eniture_WweLtlFreightQuotes::js/wweLTLvalidation.js"/>-->
+        <link src="Eniture_WweLtlFreightQuotes::js/wweLTLTestconnection.js"/>
+        <link src="Eniture_WweLtlFreightQuotes::js/wweLTLWarehouse.js"/>
+        <link src="Eniture_WweLtlFreightQuotes::js/wweLTLDropship.js"/>
+        <link src="Eniture_WweLtlFreightQuotes::js/wweLTLRAD.js"/>
+        <link src="Eniture_WweLtlFreightQuotes::js/tagsinput/wweltl-bootstrap-tagsinput.js"/>
+    </head>
+</page>

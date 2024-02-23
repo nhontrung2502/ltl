@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <WweLtConnSettings>
+            <first>
+                <wweltlApiEndpoint>legacy</wweltlApiEndpoint>
+            </first>
+        </WweLtConnSettings>
+        <wweLtlQuoteSetting>
+            <third>
+                <carrierList>
+                    AACT,ABFS,AMAP,APXT,ATMR,AVRT,BCKT,BEAV,BTVP,CAZF,CENF,CLNI,CNWY,CPCD,CTII,CXRE,DAFG,DDPP,DHRN,DPHE,DTST,DUBL,DYLT,EXLA,FCSY,FLAN,FTSC,FWDN,GLDF,HMES,MTVL,LAXV,LKVL,MIDW,NEBT,NEMF,NOPK,NPME,NMTF,OAKH,ODFL,PITD,PMLI,PNII,PYLE,RDFS,RDWY,RETL,RJWI,RLCA,ROSI,RXIC,SAIA,SEFL,SHIF,SMTL,STDF,SVSE,UPGF,WARD,WEBE,WTVA,LFMS,CTBV,MTJG,CGOJ,BRTC
+                </carrierList>
+                <ownArangementText>I'll Arrange My Own Freight</ownArangementText>
+            </third>
+        </wweLtlQuoteSetting>
+        <carriers>
+            <ENWweLTL>
+                <active>1</active>
+                <sallowspecific>0</sallowspecific>
+                <price>0</price>
+                <model>Eniture\WweLtlFreightQuotes\Model\Carrier\WweLTLShipping</model>
+                <allowed_methods>
+                    AACT,ABFS,AMAP,APXT,ATMR,AVRT,BCKT,BEAV,BTVP,CAZF,CENF,CLNI,CNWY,CPCD,CTII,CXRE,DAFG,DDPP,DHRN,DPHE,DTST,DUBL,DYLT,EXLA,FCSY,FLAN,FTSC,FWDN,GLDF,HMES,MTVL,LAXV,LKVL,MIDW,NEBT,NEMF,NOPK,NPME,NMTF,OAKH,ODFL,PITD,PMLI,PNII,PYLE,RDFS,RDWY,RETL,RJWI,RLCA,ROSI,RXIC,SAIA,SEFL,SHIF,SMTL,STDF,SVSE,UPGF,WARD,WEBE,WTVA,LFMS,CTBV,MTJG,CGOJ,BRTC
+                </allowed_methods>
+                <name>Fixed</name>
+                <title>Worldwide Express LTL Freight Quotes</title>
+                <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.
+                </specificerrmsg>
+            </ENWweLTL>
+        </carriers>
+    </default>
+</config>
